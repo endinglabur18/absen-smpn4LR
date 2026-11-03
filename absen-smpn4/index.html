@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<link rel="icon" type="image/jpg" href="favicon.jpg">    
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Absensi Kehadiran GURU DAN TENDIK SMP N 4 LR</title>
+    <style>
+        * {margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+        body {background:url('cover.png') no-repeat center center fixed;
+  background-size: contain;
+  background-color: #1e3a5f;
+  min-height: 100vh;}
+        
+        .layar-muka {position:fixed;top:0;left:0;width:100%;height:100%;background:transparent;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;transition:opacity .5s;}
+        .layar-muka.hilang {opacity:0;pointer-events:none;}
+        .kotak-logo {background:#fff;width:180px;height:180px;border-radius:50%;display:flex;justify-content:center;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,.2);margin-bottom:25px;cursor:pointer;}
+        .kotak-logo:active {transform:scale(.95);}
+        .logo-teks {font-size:48px;font-weight:bold;color:#2980b9;}
+        .judul-app {color:#fff;text-shadow:0 0 8px rgba(0,0,0,0.9);font-size:22px;font-weight:bold;text-align:center;margin-bottom:8px;}
+        .sub-judul {color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,0.5), 1px 1px 2px rgba(0,0,0.6);font-size:14px;text-align:center;margin-bottom:40px;}
+        .tombol-mulai {background:#fff;color:#2980b9;border:none;padding:12px 40px;font-size:16px;font-weight:bold;border-radius:30px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.15);}
+        .info-bawah {color:#fff;font-size:12px;margin-top:20px;animation:kedip 1.5s infinite;}
+        @keyframes kedip {0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
+        
+        .konten {max-width:750px;margin:0 auto;padding:15px;display:none;}
+        .konten.tampil {display:block;}
+        .header-app {background:#fff;border-radius:8px;padding:15px;text-align:center;margin-bottom:15px;box-shadow:0 2px 5px rgba(0,0,0,.1);}
+        .header-app h2 {color:#1e3a5f;font-size:18px;margin-bottom:5px;}
+        .info-batas {background:#fff3cd;border-left:4px solid #f39c12;padding:10px;border-radius:5px;margin-bottom:15px;font-size:13px;color:#856404;}
+        
+        .tab-container {display:flex;margin-bottom:15px;gap:8px;}
+        .tab {flex:1;padding:12px;border:none;border-radius:6px;font-weight:bold;font-size:14px;cursor:pointer;background:#ddd;color:#666;}
+        .tab.aktif {background:#2980b9;color:#fff;}
+        
+        .form-card {background:#fff;border-radius:8px;padding:18px;margin-bottom:15px;box-shadow:0 2px 5px rgba(0,0,0,.08);}
+        label {display:block;font-weight:bold;margin:14px 0 6px;color:#2c3e50;font-size:14px;}
+        input,select,textarea {width:100%;padding:10px;border:1px solid #ddd;border-radius:5px;font-size:14px;}
+        button {padding:10px 15px;border:none;border-radius:5px;font-size:14px;font-weight:bold;cursor:pointer;margin:5px 5px 5px 0;}
+        .btn-hijau {background:#27ae60;color:#fff;}
+        .btn-biru {background:#3498db;color:#fff;}
+        .btn-abu {background:#95a5a6;color:#fff;}
+        .pilihan-status {display:flex;flex-wrap:wrap;gap:8px;margin-top:5px;}
+        .btn-status {flex:1;min-width:80px;padding:10px 8px;border:2px solid #ddd;background:#fff;border-radius:5px;cursor:pointer;font-weight:bold;font-size:13px;}
+        .btn-status.aktif {border-color:transparent;color:#fff;}
+        .btn-status.hadir.aktif {background:#27ae60;}
+        .btn-status.sakit.aktif {background:#f39c12;}
+        .btn-status.izin.aktif {background:#3498db;}
+        .btn-status.alpa.aktif {background:#e74c3c;}
+        .kotak-ttd {border:2px dashed #3498db;border-radius:5px;background:#fafcfe;margin-top:5px;}
+        canvas {width:100%;height:130px;cursor:crosshair;touch-action:none;}
+        .kotak-peta {border:1px solid #ddd;border-radius:5px;overflow:hidden;margin-top:8px;display:none;}
+        iframe {width:100%;height:160px;border:0;}
+        .link-peta {margin-top:8px;font-size:13px;word-break:break-all;display:none;}
+        .link-peta a {color:#2980b9;text-decoration:none;}
+        .kotak-keterangan {margin-top:12px;padding:12px;background:#f8f9fa;border-radius:5px;display:none;}
+        .kotak-keterangan.tampil {display:block;}
+        hr {border:none;border-top:1px solid #eee;margin:15px 0;}
+        .status-lokasi {font-size:13px;color:#666;margin-top:5px;}
+        .catatan-waktu {font-size:12px;color:#666;margin-top:4px;}
+        .pesan-sukses {background:#d4edda;color:#155724;padding:10px;border-radius:5px;margin-top:10px;display:none;}
+        .pesan-error {background:#f8d7da;color:#721c24;padding:10px;border-radius:5px;margin-top:10px;display:none;}
+        
+        .warning-box {background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;padding:12px;border-radius:6px;margin-bottom:15px;font-weight:bold;text-align:center;font-size:14px;}
+        .locked-box {background:#e2e3e5;color:#383d41;border:1px solid #d6d8db;padding:15px;border-radius:6px;margin-bottom:15px;text-align:center;font-weight:bold;}
+    </style>
+</head>
+<body>
+
+<!-- === HALAMAN PEMBUKA === -->
+<div class="layar-muka" id="layarMuka">
+ <div class="kotak-logo" onclick="bukaAplikasi()">
+  <img src="logo.png" alt="SMPN 4 LR" style="width: 85%; height: 85%; object-fit: contain;position:relative; left: 2px;">
+ </div>
+    <h1 class="judul-app">SISTEM ABSENSI SEKOLAH</h1>
+    <p class="sub-judul">SMP NEGERI 4 Langke Rembong<br>Tahun Ajaran 2026/2027</p>
+    <button class="tombol-mulai" onclick="bukaAplikasi()">📋 Buka Absensi</button>
+    <p class="info-bawah">👆 Klik untuk mulai</p>
+</div>
+
+<!-- === KONTEN UTAMA === -->
+<div class="konten" id="kontenUtama">
+    <div class="header-app">
+        <h2>📋 ABSENSI GURU & TENDIK SMPN 4 LR</h2>
+        <p>Data tersimpan otomatis ke Google Sheets ✅</p>
+    </div>
+
+    <div class="info-batas">
+        ⏰ <strong>Batas Waktu:</strong> Masuk s.d. 08:00 WITA (Tepat waktu s.d. 07:15 WITA) | Pulang mulai pukul 12:00 WITA
+    </div>
+
+    <!-- TAB NAVIGASI UTAMA -->
+    <div class="tab-container" id="tabContainerMain">
+        <button class="tab aktif" id="tabMasuk" onclick="gantiTab('masuk')">🌅 ABSEN MASUK</button>
+        <button class="tab" id="tabPulang" onclick="gantiTab('pulang')">🌇 ABSEN PULANG</button>
+        <button class="tab" id="tabRekap" onclick="gantiTab('rekap')">📋 REKAP HADIR</button>
+    </div>
+
+    <!-- PESAN PERINGATAN / KUNCI -->
+    <div id="warningPulang" class="warning-box" style="display:none;">
+        ⚠️ Perhatian: Jam pulang belum waktunya! Absen pulang baru dibuka pukul 12:00 WITA.
+    </div>
+
+    <div id="lockedMasuk" class="locked-box" style="display:none;">
+        🔒 Waktu Absen Masuk telah ditutup (Batas akhir pukul 08:00 WITA).
+    </div>
+
+    <!-- KONTEN TAB 1 & 2: FORM ABSEN -->
+    <div class="form-card" id="formCardUtama">
+       <label>📅 Tanggal</label>
+       <input type="date" id="tanggal" style="background-color: #e9ecef; cursor: not-allowed;" readonly>
+       
+       <div>
+            <label id="labelJam">🕐 Jam Masuk</label>
+            <input type="time" id="jamWaktu" class="form-control" readonly style="background-color: #f0f0f0; cursor: not-allowed;" placeholder="-- : --">
+            <p class="catatan-waktu" id="catatanJam">Tepat waktu: s.d. <strong>07:15 WITA</strong> | Batas akhir: <strong>08:00 WITA</strong></p>
+        </div>
+
+        <label>👤 Nama Lengkap</label>
+        <select id="namaPengguna">
+            <option value="">-- Pilih Nama --</option>
+            <option value="Adrianus Firman, S.Pd">Adrianus Firman, S.Pd</option>
+            <option value="Agustinus Warsan,S.Fil">Agustinus Warsan,S.Fil</option>
+            <option value="ANASTASIA SIUN,S.Pd">ANASTASIA SIUN,S.Pd</option>
+            <option value="Antonius Paulo Riberu,S.Pd">Antonius Paulo Riberu,S.Pd</option>
+            <option value="Apolonia Larasati Rotok,S.Pd">Apolonia Larasati Rotok,S.Pd</option>
+            <option value="Arnoldus Yansen Angkas,S.Pd">Arnoldus Yansen Angkas,S.Pd</option>
+            <option value="Asriana Bahagia Asar,S.Pd">Asriana Bahagia Asar,S.Pd</option>
+            <option value="Blasius Sadung,S.Pd">Blasius Sadung,S.Pd</option>
+            <option value="Damianus Labur,S.Pd">Damianus Labur,S.Pd</option>
+            <option value="Dominikus Nadur">Dominikus Nadur</option>
+            <option value="Dorotea Nonitea Deri,S.Pd">Dorotea Nonitea Deri,S.Pd</option>
+            <option value="EFRALUSIA SERI,S.Pd">EFRALUSIA SERI,S.Pd</option>
+            <option value="Efridus Nantas,S.Pd">Efridus Nantas,S.Pd</option>
+            <option value="Elisabeth Meo,S.Pd">Elisabeth Meo,S.Pd</option>
+            <option value="Emiliana Tibu,S.Pd">Emiliana Tibu,S.Pd</option>
+            <option value="Emirensiana Serli Lehot,S.Pd">Emirensiana Serli Lehot,S.Pd</option>
+            <option value="Fandy Raymond Allen Smith,S.Pd">Fandy Raymond Allen Smith,S.Pd</option>
+            <option value="Febriansyah,S.Pd">Febriansyah,S.Pd</option>
+            <option value="FLAVIANA NUR CEMBES BATUMALI,S.Pd">FLAVIANA NUR CEMBES BATUMALI,S.Pd</option>
+            <option value="Fransiska Ndiana,S.E">Fransiska Ndiana,S.E</option>
+            <option value="Fransiskus Darviansa Darma,S.Pd">Fransiskus Darviansa Darma,S.Pd</option>
+            <option value="FRANSISKUS SUHARDI,S.Pd">FRANSISKUS SUHARDI,S.Pd</option>
+            <option value="Frederic Erdinando Labur,S.P">Frederic Erdinando Labur,S.P</option>
+            <option value="Gaudensia Primarni Sanit,S.Pd">Gaudensia Primarni Sanit,S.Pd</option>
+            <option value="Hermina Edit,S.Ag">Hermina Edit,S.Ag</option>
+            <option value="Hilarius Jehadu,S.Pd">Hilarius Jehadu,S.Pd</option>
+            <option value="Hildegardis Marlisa Ndaeng,S.Pd">Hildegardis Marlisa Ndaeng,S.Pd</option>
+            <option value="Isadora Nahi,S.Pd">Isadora Nahi,S.Pd</option>
+            <option value="Januarius Mahadi Saputra Oman,S.Pd">Januarius Mahadi Saputra Oman,S.Pd</option>
+            <option value="Karolina Yosyue Lawi,S.Pd">Karolina Yosyue Lawi,S.Pd</option>
+            <option value="Klaudensia Andayani,S.Kom">Klaudensia Andayani,S.Kom</option>
+            <option value="KLAUDIA ADINI MBON,S.Pd">KLAUDIA ADINI MBON,S.Pd</option>
+            <option value="Klaudia Triani,S.Pd">Klaudia Triani,S.Pd</option>
+            <option value="Laurensius Suyono Labi,S.Pd">Laurensius Suyono Labi,S.Pd</option>
+            <option value="Lucia Ika Kurnia Retnaningrum,S.S">Lucia Ika Kurnia Retnaningrum,S.S</option>
+            <option value="Maria Trivonia Jaya,S.Pd">Maria Trivonia Jaya,S.Pd</option>
+            <option value="Mariana Agnonika Tatus,S.Pd">Mariana Agnonika Tatus,S.Pd</option>
+            <option value="Marianus Fridolin Gale Bu'u,S.Pd">Marianus Fridolin Gale Bu'u,S.Pd</option>
+            <option value="Maria Volenta Kurniati,S.Pd,M.Pd">Maria Volenta Kurniati,S.Pd,M.Pd</option>
+            <option value="Melania Liliastri Sali,S.Pd">Melania Liliastri Sali,S.Pd</option>
+            <option value="Ni Wayan Putri Resnasari,M.Pd">Ni Wayan Putri Resnasari,M.Pd</option>
+            <option value="Patrisius Jehaman">Patrisius Jehaman</option>
+            <option value="Patrisius Yosefus Darmo,S.E">Patrisius Yosefus Darmo,S.E</option>
+            <option value="Rodriques Korbiniana Tildy,S.Si">Rodriques Korbiniana Tildy,S.Si</option>
+            <option value="Silvester Daud,S.Pd,M.Si">Silvester Daud,S.Pd,M.Si</option>
+            <option value="Siprianus Sion,S.Pd">Siprianus Sion,S.Pd</option>
+            <option value="Theresiana Nuriati,S.Pd">Theresiana Nuriati,S.Pd</option>
+            <option value="ULRICH PAJANG LAMSI,S.Pd">ULRICH PAJANG LAMSI,S.Pd</option>
+            <option value="Yuliani Jessica Putri,S.Pd">Yuliani Jessica Putri,S.Pd</option>
+            <option value="Yustina Lihut">Yustina Lihut</option>
+        </select>
+
+        <label>📍 Lokasi Kehadiran</label>
+        <button class="btn-biru" onclick="ambilLokasi()">📍 Ambil Lokasi Sekarang</button>
+        <p class="status-lokasi" id="statusLokasi">Klik tombol di atas untuk mengambil lokasi</p>
+        <div class="kotak-peta" id="petaKotak">
+            <iframe id="bingkaiPeta" src="" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="link-peta" id="linkPeta"></div>
+        <input type="hidden" id="lat">
+        <input type="hidden" id="lng">
+
+        <label>✅ Status Kehadiran</label>
+        <div class="pilihan-status">
+            <button type="button" class="btn-status hadir" data-status="Hadir">✅ Hadir</button>
+            <button type="button" class="btn-status sakit" data-status="Sakit">🟡 Sakit</button>
+            <button type="button" class="btn-status izin" data-status="Izin">📝 Izin</button>
+            <button type="button" class="btn-status alpa" data-status="Tidak Hadir">❌ Alpa</button>
+        </div>
+        <input type="hidden" id="status" value="">
+
+        <div class="kotak-keterangan" id="bagianKeterangan">
+            <label>📝 Keterangan / Alasan</label>
+            <textarea id="alasan" rows="2" placeholder="Tulis alasan Anda..."></textarea>
+        </div>
+
+        <label>✍️ Tanda Tangan</label>
+        <div class="kotak-ttd">
+            <canvas id="tandaTangan" width="400" height="150" style="border:1px solid #ccc;background:#fff;touch-action:none;"></canvas>
+        </div>
+
+        <hr>
+
+        <!-- PESAN -->
+        <div id="pesanSukses" class="pesan-sukses">✅ Data berhasil tersimpan ke Google Sheets!</div>
+        <div id="pesanError" class="pesan-error">❌ Gagal menyimpan. Coba lagi.</div>
+
+        <div>
+            <button class="btn-abu" onclick="hapusTandaTangan()">🗑️ Hapus Tanda Tangan</button>
+            <button class="btn-hijau" onclick="simpanAbsen()">✅ Simpan Absensi</button>
+        </div>
+    </div>
+
+    <!-- KONTEN TAB 3: REKAP KEHADIRAN -->
+    <div class="form-card" id="formCardRekap" style="display: none;">
+        <h3>📋 Daftar Kehadiran Guru & Tendik Hari Ini</h3>
+        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Data diperbarui secara real-time dari sistem.</p>
+        
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+                <thead>
+                    <tr style="background: #f4f6f8; border-bottom: 2px solid #ddd;">
+                        <th style="padding: 10px;">No</th>
+                        <th style="padding: 10px;">Nama</th>
+                        <th style="padding: 10px;">Jam</th>
+                        <th style="padding: 10px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="listRekapHariIni">
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 20px; color: #888;">Memuat data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <button class="btn-biru" onclick="muatDataRekapHariIni()" style="margin-top: 15px; width: 100%;">🔄 Muat Ulang Data</button>
+    </div>
+</div>
+
+<script>
+const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbwdjYqVSKdoEG9h_YBYVB71y8w7xbgnamr8jD_1X_FVMOl4ZcKjesXXQnzLUjK1QatM/exec";
+
+let modeAbsen = 'masuk';
+let statusTerpilih = '';
+
+// === FUNGSI WAKTU AKURAT WITA (UTC+8) ===
+function getWitaTime() {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    return new Date(utc + (3600000 * 8));
+}
+
+// === BUKA APLIKASI ===
+function bukaAplikasi() {
+    const layarMuka = document.getElementById('layarMuka');
+    const kontenUtama = document.getElementById('kontenUtama');
+    
+    if (layarMuka) layarMuka.classList.add('hilang');
+    if (kontenUtama) kontenUtama.classList.add('tampil');
+    
+    const inputTgl = document.getElementById('tanggal');
+    if (inputTgl) inputTgl.valueAsDate = getWitaTime();
+    
+    aturJamOtomatis();
+    aturUkuranKanvas();
+    cekAturanJamRealtime();
+}
+
+// === VERIFIKASI ABSEN MASUK KE SERVER (UNTUK PULANG) ===
+async function verifikasiAbsenMasuk() {
+    const nama = document.getElementById('namaPengguna').value;
+    const tanggal = document.getElementById('tanggal').value;
+    const warningPulang = document.getElementById('warningPulang');
+    const formCardUtama = document.getElementById('formCardUtama');
+
+    if (modeAbsen !== 'pulang') return;
+
+    if (!nama) {
+        warningPulang.style.display = 'block';
+        warningPulang.innerText = "⚠️ Silakan pilih Nama Lengkap Anda terlebih dahulu untuk memverifikasi akses absen pulang.";
+        formCardUtama.style.display = 'none';
+        return;
+    }
+
+    warningPulang.style.display = 'block';
+    warningPulang.innerText = "⏳ Memeriksa data absen masuk Anda di server...";
+
+    try {
+        const response = await fetch(URL_GOOGLE_SHEETS, {
+            method: 'POST',
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+                action: "cekStatusMasuk",
+                nama: nama,
+                tanggal: tanggal.split('-').reverse().join('/')
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.sudahAbsen === true) {
+            if (['Sakit', 'Izin', 'Tidak Hadir'].includes(result.statusPagi)) {
+                warningPulang.style.display = 'block';
+                warningPulang.innerText = `ℹ️ Anda tercatat dengan status "${result.statusPagi}" pada absen masuk hari ini. Guru dengan status tersebut tidak perlu melakukan absen pulang.`;
+                formCardUtama.style.display = 'none';
+            } else {
+                warningPulang.style.display = 'none';
+                formCardUtama.style.display = 'block';
+            }
+        } else {
+            warningPulang.style.display = 'block';
+            warningPulang.innerText = "❌ Maaf, Anda belum melakukan Absen Masuk hari ini. Absen Pulang terkunci.";
+            formCardUtama.style.display = 'none';
+        }
+    } catch (err) {
+        console.error("Gagal verifikasi:", err);
+        warningPulang.style.display = 'block';
+        warningPulang.innerText = "⚠️ Gagal memverifikasi data ke server. Periksa koneksi internet.";
+        formCardUtama.style.display = 'none';
+    }
+}
+
+document.getElementById('namaPengguna').addEventListener('change', function() {
+    if (modeAbsen === 'pulang') {
+        const wita = getWitaTime();
+        const totalMinutes = wita.getHours() * 60 + wita.getMinutes();
+        if (totalMinutes >= 720) {
+            verifikasiAbsenMasuk();
+        }
+    }
+});
+
+// === CEK ATURAN JAM OTOMATIS (BATAS 08:00 WITA) ===
+function cekAturanJamRealtime() {
+    if (modeAbsen === 'rekap') return;
+
+    const wita = getWitaTime();
+    const currentHour = wita.getHours();
+    const currentMinute = wita.getMinutes();
+    const totalMinutes = currentHour * 60 + currentMinute;
+
+    const batasMasukMenit = 8 * 60;   // 08:00 WITA   
+    const batasPulangMenit = 12 * 60; // 12:00 WITA 
+
+    const warningPulang = document.getElementById('warningPulang');
+    const lockedMasuk = document.getElementById('lockedMasuk');
+    const formCardUtama = document.getElementById('formCardUtama');
+
+    if (modeAbsen === 'masuk') {
+        // Kunci total jika sudah lewat jam 08:00 WITA
+        if (totalMinutes > batasMasukMenit) {
+            if (lockedMasuk) lockedMasuk.style.display = 'block';
+            if (formCardUtama) formCardUtama.style.display = 'none';
+        } else {
+            if (lockedMasuk) lockedMasuk.style.display = 'none';
+            if (formCardUtama) formCardUtama.style.display = 'block';
+        }
+    }
+
+    if (modeAbsen === 'pulang') {
+        if (totalMinutes < batasPulangMenit) {
+            if (warningPulang) {
+                warningPulang.style.display = 'block';
+                warningPulang.innerText = "⚠️ Perhatian: Jam pulang belum waktunya! Absen pulang baru dibuka pukul 12:00 WITA.";
+            }
+            if (formCardUtama) formCardUtama.style.display = 'none';
+        } else {
+            const nama = document.getElementById('namaPengguna').value;
+            if (!nama) {
+                if (warningPulang) {
+                    warningPulang.style.display = 'block';
+                    warningPulang.innerText = "⚠️ Silakan pilih Nama Lengkap Anda terlebih dahulu untuk membuka form absen pulang.";
+                }
+                if (formCardUtama) formCardUtama.style.display = 'none';
+            } else {
+                verifikasiAbsenMasuk();
+            }
+        }
+    }
+}
+
+setInterval(cekAturanJamRealtime, 1000);
+
+// === GANTI TAB (MASUK / PULANG / REKAP) ===
+function gantiTab(target) {
+    modeAbsen = target;
+    
+    document.getElementById('tabMasuk').classList.toggle('aktif', target === 'masuk');
+    document.getElementById('tabPulang').classList.toggle('aktif', target === 'pulang');
+    document.getElementById('tabRekap').classList.toggle('aktif', target === 'rekap');
+    
+    const formCardUtama = document.getElementById('formCardUtama');
+    const formCardRekap = document.getElementById('formCardRekap');
+    const warningPulang = document.getElementById('warningPulang');
+    const lockedMasuk = document.getElementById('lockedMasuk');
+
+    if (target === 'rekap') {
+        formCardUtama.style.display = 'none';
+        formCardRekap.style.display = 'block';
+        warningPulang.style.display = 'none';
+        lockedMasuk.style.display = 'none';
+        muatDataRekapHariIni();
+    } else {
+        formCardRekap.style.display = 'none';
+        formCardUtama.style.display = 'block';
+        
+        document.getElementById('labelJam').textContent = target === 'masuk' ? '🕐 Jam Masuk' : '🕐 Jam Pulang';
+        document.getElementById('catatanJam').innerHTML = target === 'masuk' 
+            ? 'Tepat waktu: s.d. <strong>07:15 WITA</strong> | Batas akhir: <strong>08:00 WITA</strong>' 
+            : 'Absen pulang dibuka mulai jam: <strong>12:00 WITA</strong> (Hanya untuk yang Hadir)';
+        
+        aturJamOtomatis();
+        sembunyikanPesan();
+        cekAturanJamRealtime();
+    }
+}
+
+// === TARIK DATA REKAP DARI GOOGLE APPS SCRIPT ===
+function muatDataRekapHariIni() {
+    const tbody = document.getElementById('listRekapHariIni');
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: #666;">⏳ Mengambil data kehadiran...</td></tr>`;
+
+    fetch(URL_GOOGLE_SHEETS + '?action=getRekapHariIni')
+        .then(response => response.json())
+        .then(data => {
+            tbody.innerHTML = '';
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: #888;">Belum ada guru/tendik yang melakukan absen hari ini.</td></tr>`;
+                return;
+            }
+
+            data.forEach((item, index) => {
+                let badgeColor = '#27ae60'; // Hijau (Hadir)
+                const statusLower = (item.status || '').toLowerCase();
+                if (statusLower.includes('terlambat')) badgeColor = '#d35400'; // Oranye
+                else if (statusLower.includes('sakit')) badgeColor = '#f39c12'; // Kuning
+                else if (statusLower.includes('izin')) badgeColor = '#3498db'; // Biru
+                else if (statusLower.includes('tidak') || statusLower.includes('alpa')) badgeColor = '#e74c3c'; // Merah
+
+                let row = `
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px;">${index + 1}</td>
+                        <td style="padding: 10px; font-weight: bold; color: #2c3e50;">${item.nama}</td>
+                        <td style="padding: 10px;">${item.jam}</td>
+                        <td style="padding: 10px;"><span style="background: ${badgeColor}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">${item.status}</span></td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        })
+        .catch(error => {
+            console.error('Error rekap:', error);
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: red;">❌ Gagal memuat data rekap.</td></tr>`;
+        });
+}
+
+function aturJamOtomatis() {
+    const wita = getWitaTime();
+    const jam = wita.getHours().toString().padStart(2,'0') + ':' + wita.getMinutes().toString().padStart(2,'0');
+    const inputJam = document.getElementById('jamWaktu');
+    if (inputJam) inputJam.value = jam;
+}
+
+// === PILIH STATUS ===
+const tombolStatus = document.querySelectorAll('.btn-status');
+const kotakKeterangan = document.getElementById('bagianKeterangan');
+
+tombolStatus.forEach(btn => {
+    btn.addEventListener('click', function() {
+        tombolStatus.forEach(b => b.classList.remove('aktif'));
+        this.classList.add('aktif');
+        statusTerpilih = this.getAttribute('data-status');
+        document.getElementById('status').value = statusTerpilih;
+        kotakKeterangan.classList.toggle('tampil', statusTerpilih === 'Sakit' || statusTerpilih === 'Izin');
+        if(!(statusTerpilih === 'Sakit' || statusTerpilih === 'Izin')) document.getElementById('alasan').value = '';
+    });
+});
+
+// === AMBIL LOKASI ===
+function ambilLokasi() {
+    const statusLokasi = document.getElementById('statusLokasi');
+    const kotakPeta = document.getElementById('petaKotak');
+    const linkPeta = document.getElementById('linkPeta');
+
+    if (!navigator.geolocation) {
+        statusLokasi.innerHTML = '❌ Perangkat tidak mendukung lokasi';
+        return;
+    }
+    statusLokasi.innerHTML = '⏳ Mengambil lokasi...';
+
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            document.getElementById('lat').value = lat;
+            document.getElementById('lng').value = lng;
+            document.getElementById('bingkaiPeta').src = `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+            linkPeta.innerHTML = `📍 <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank">Buka di Google Maps</a><br>${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            kotakPeta.style.display = 'block';
+            linkPeta.style.display = 'block';
+            statusLokasi.innerHTML = '✅ Lokasi tersimpan';
+        },
+        err => {
+            statusLokasi.innerHTML = err.code === 1 ? '⚠️ Izinkan akses lokasi' : '⚠️ Gagal mengambil lokasi';
+        },
+        { timeout: 10000, enableHighAccuracy: true }
+    );
+}
+
+// === TANDA TANGAN & KANVAS ===
+const kanvas = document.getElementById('tandaTangan');
+const ctx = kanvas.getContext('2d');
+let sedangMenggambar = false, xSebelumnya = 0, ySebelumnya = 0;
+
+function aturUkuranKanvas() {
+    if (!kanvas) return;
+    const kotak = kanvas.getBoundingClientRect();
+    if(kotak.width > 0) {
+        kanvas.width = kotak.width;
+        kanvas.height = 130;
+    }
+}
+window.addEventListener('resize', aturUkuranKanvas);
+
+function mulaiGambar(e) {
+  sedangMenggambar = true;
+  const rect = kanvas.getBoundingClientRect();
+  const pt = e.touches ? e.touches[0] : e;
+  xSebelumnya = (pt.clientX || pt.pageX) - rect.left;
+  ySebelumnya = (pt.clientY || pt.pageY) - rect.top;
+}
+
+function gambar(e) {
+  if (!sedangMenggambar) return;
+  e.preventDefault();
+  const rect = kanvas.getBoundingClientRect();
+  const pt = e.touches ? e.touches[0] : e;
+  const x = (pt.clientX || pt.pageX) - rect.left;
+  const y = (pt.clientY || pt.pageY) - rect.top;
+  
+  ctx.beginPath();
+  ctx.moveTo(xSebelumnya, ySebelumnya);
+  ctx.lineTo(x, y);
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  
+  xSebelumnya = x;
+  ySebelumnya = y;
+}
+
+function berhentiGambar() { 
+    sedangMenggambar = false; 
+}
+
+function hapusTandaTangan() {
+  if (kanvas && ctx) {
+      ctx.clearRect(0, 0, kanvas.width, kanvas.height);
+  }
+  sembunyikanPesan();
+}
+
+function ambilTandaTanganURL() {
+  return kanvas ? kanvas.toDataURL('image/png') : '';
+}
+
+if (kanvas) {
+    kanvas.addEventListener('mousedown', mulaiGambar);
+    kanvas.addEventListener('mousemove', gambar);
+    kanvas.addEventListener('mouseup', berhentiGambar);
+    kanvas.addEventListener('mouseout', berhentiGambar);
+    kanvas.addEventListener('touchstart', mulaiGambar);
+    kanvas.addEventListener('touchmove', gambar);
+    kanvas.addEventListener('touchend', berhentiGambar);
+}
+
+function sembunyikanPesan() {
+    document.getElementById('pesanSukses').style.display = 'none';
+    document.getElementById('pesanError').style.display = 'none';
+}
+
+// === KIRIM DATA KE GOOGLE SHEETS (DENGAN OTOMATIS TERLAMBAT) ===
+async function simpanAbsen() {
+    const tanggal = document.getElementById('tanggal').value;
+    const nama = document.getElementById('namaPengguna').value;
+    const jam = document.getElementById('jamWaktu').value; // Format "HH:mm"
+    let status = statusTerpilih;
+    const alasan = document.getElementById('alasan').value || '-';
+    const lat = document.getElementById('lat').value;
+    const lng = document.getElementById('lng').value;
+    
+    const kanvasKosong = document.createElement('canvas');
+    kanvasKosong.width = kanvas.width;
+    kanvasKosong.height = kanvas.height;
+    const tandaTanganKosong = kanvasKosong.toDataURL();
+    const tandaTanganSekarang = kanvas.toDataURL();
+
+    if(!nama) { alert('⚠️ Pilih nama dulu bro!'); return; }
+    if(!status) { alert('⚠️ Pilih status kehadiran!'); return; }
+    if(!lat && !['Sakit','Izin','Tidak Hadir'].includes(status)) {
+        alert('⚠️ Ambil lokasi dulu bro!'); return;
+    }
+    if(tandaTanganSekarang === tandaTanganKosong && !['Sakit','Izin','Tidak Hadir'].includes(status)) {
+        alert('⚠️ Tanda tangan dulu bro!'); return;
+    }
+
+    // OTOMATIS JADI TERLAMBAT JIKA ABSEN MASUK LEWAT DARI 07:15 WITA
+    if (modeAbsen === 'masuk' && status === 'Hadir') {
+        const [jamStr, menitStr] = jam.split(':');
+        const totalMenitAbsen = (parseInt(jamStr) * 60) + parseInt(menitStr);
+        const batasTepatWaktu = (7 * 60) + 15; // 07:15 WITA -> 435 menit
+
+        if (totalMenitAbsen > batasTepatWaktu) {
+            status = 'Terlambat';
+        }
+    }
+
+    const data = {
+        modeAbsen: modeAbsen,
+        tanggal: tanggal.split('-').reverse().join('/'),
+        nama: nama,
+        jamMasuk: modeAbsen === 'masuk' ? jam : '-',
+        jamPulang: modeAbsen === 'pulang' ? jam : '-',
+        status: status,
+        keterangan: alasan,
+        lokasi: lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : '-',
+        tandaTangan: ambilTandaTanganURL()
+    };
+
+    try {
+        const response = await fetch(URL_GOOGLE_SHEETS, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.result === "success" || result.status === "success") {
+            document.getElementById('pesanSukses').style.display = 'block';
+            alert(status === 'Terlambat' ? '⚠️ Absen tersimpan. Anda tercatat TERLAMBAT (lewat 07:15 WITA).' : '✅ Berhasil tersimpan ke Google Sheets!');
+            
+            document.getElementById('namaPengguna').value = '';
+            tombolStatus.forEach(b => b.classList.remove('aktif'));
+            statusTerpilih = '';
+            kotakKeterangan.classList.remove('tampil');
+            document.getElementById('alasan').value = '';
+            hapusTandaTangan();
+            document.getElementById('petaKotak').style.display = 'none';
+            document.getElementById('linkPeta').style.display = 'none';
+            document.getElementById('statusLokasi').innerHTML = 'Klik tombol di atas untuk ambil lokasi';
+            document.getElementById('lat').value = '';
+            document.getElementById('lng').value = '';
+            aturJamOtomatis();
+            
+            setTimeout(() => {
+                gantiTab('rekap');
+            }, 1000);
+        } else {
+            throw new Error(result.message || "Gagal oleh server.");
+        }
+        
+    } catch (err) {
+        document.getElementById('pesanError').style.display = 'block';
+        console.error("Gagal submit:", err);
+        alert('❌ Gagal menyimpan: ' + err.message);
+    }
+}
+</script>
+</body>
+</html>
